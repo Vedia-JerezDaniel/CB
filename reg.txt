@@ -1,0 +1,13 @@
+https://viblo.asia/p/predict-independent-values-with-text-data-using-linear-regression-aWj5314eZ6m
+https://www.kaggle.com/loryn808/baseline-bag-of-words-linear-regression
+
+https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html
+https://scikit-learn.org/stable/modules/feature_extraction.html#the-bag-of-words-representation
+
+https://realpython.com/python-keras-text-classification/
+https://www.kdnuggets.com/2018/11/multi-class-text-classification-doc2vec-logistic-regression.html
+
+https://autokeras.com/tutorial/text_regression/
+https://pythonhealthcare.org/2018/06/02/85-using-free-text-for-classification-bag-of-words/
+
+https://www.oreilly.com/library/view/applied-text-analysis/9781491963036/ch04.html

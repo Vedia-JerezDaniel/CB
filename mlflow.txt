@@ -1,0 +1,6 @@
+https://blog.noodle.ai/?s=Mlflow
+https://thenewstack.io/tutorial-manage-machine-learning-lifecycle-with-databricks-mlflow/
+https://towardsdatascience.com/manage-your-machine-learning-lifecycle-with-mlflow-part-1-a7252c859f72
+https://github.com/tsterbak?tab=repositories
+https://www.youtube.com/watch?v=6z0_n8kxh-g&t=4264s
+https://github.com/ngallot/mlflow-demo
