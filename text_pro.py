@@ -1,15 +1,11 @@
 import numpy as np
 import pandas as pd
-import datetime as dt
-import os
 from dateutil.relativedelta import *
-import re
 import pickle
-from tqdm.notebook import tqdm
-
 import seaborn as sns; sns.set(style="darkgrid")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+from getsplit import *
 
 plt.rcParams["figure.figsize"] = (18,9)
 plt.style.use('fivethirtyeight')
@@ -23,48 +19,9 @@ pd.set_option('display.max_colwidth', 200)
 dir_name='E:\\GitRepo\\CB speeches\\data\\'
 excel_file = "jpn_pre.xlsx"
 read_file = dir_name + excel_file
-boe = pd.read_excel(read_file)
+boe = pd.read_excel("read_file")
+# boe = pd.read_excel("/home/dani/Escritorio/Gitrepo/CB/data/boe_pre.xlsx")
 boe.shape
-
-
-def get_split(text, split_len=200, overlap=50):
-    '''
-    Returns a list of split text of $split_len with overlapping of $overlap.
-    Each item of the list will have around split_len length of text.
-    '''
-    l_total = []
-    words = re.findall(r'\b([a-zA-Z]+n\'t|[a-zA-Z]+\'s|[a-zA-Z]+)\b', str(text))    
-    if len(words) < split_len:
-        n = 1
-    else:
-        n = (len(words) - overlap) // (split_len - overlap) + 1
-        
-    for i in range(n):
-        l_parcial = words[(split_len - overlap) * i: (split_len - overlap) * i + split_len]
-        l_total.append(" ".join(l_parcial))
-    return l_total
-
-
-def get_split_df(df, split_len=200, overlap=50):
-    '''
-    Returns a dataframe which is an extension of an input dataframe.
-    Each row in the new dataframe has less than $split_len words in 'text'.
-    '''
-    split_data_list = []
-
-    for i, row in tqdm(df.iterrows(), total=df.shape[0]):
-        #print("Original Word Count: ", row['word_count'])
-        text_list = get_split(row["text"], split_len, overlap)
-        for text in text_list:
-            row['text'] = text
-            #print(len(re.findall(r'\b([a-zA-Z]+n\'t|[a-zA-Z]+\'s|[a-zA-Z]+)\b', text)))
-            row['wordcount'] = len(re.findall(r'\b([a-zA-Z]+n\'t|[a-zA-Z]+\'s|[a-zA-Z]+)\b', str(text)))
-            split_data_list.append(list(row))
-            
-    split_df = pd.DataFrame(split_data_list, columns=df.columns)
-    split_df['RateDecision'] = split_df['RateDecision'].astype('Int8')
-    
-    return split_df
 
 
 def remove_short_nokeyword(df, keywords = ['rate', 'rates', 'federal fund', 'outlook', 'forecast', 'employ', 'economy','euro area','balance sheet'], min_times=2):
