@@ -14,7 +14,7 @@ nltk.download("punkt")
 plt.style.use("seaborn-whitegrid")
 
 # open list pickle
-fed = "DB/fed_pickle"
+fed = "DB/rate_fed"
 infile = open(fed, "rb")
 fed = pickle.load(infile)
 
@@ -234,21 +234,18 @@ import matplotlib.dates as mdates
 fig, ax = plt.subplots(figsize=(15, 7))
 plt.title("Sentiment analysis evolution", fontsize=16)
 
+ax.scatter(fed.date, fed["Rate"] * 15, c="blue", alpha=0.5)
 ax.plot(fed.date, CompToMA, c="red", linewidth=2.0)
 ax.plot(fed.date, NetSentimentNorm, c="green", linewidth=1, alpha=0.5)
 ax.legend(
     [
-        str(str(Window) + " statements moving average"),
-        "Net sentiment of individual statements",
-        "FED Funds Rate",
+        "FED Funds Rate", str(str(Window) + " statements moving average"),
+        "Net sentiment of individual statements"
     ],
-    prop={"size": 14},
-    loc=2,
+    prop={"size": 13},
+    loc=0,
 )
 
-# ax2 = ax1.twinx()
-ax.scatter(fed.date, fed["Rate"] * 30, c="blue", alpha=0.5)
-# ax2.set_ylabel('FER Rate')
 
 years = mdates.YearLocator()  # every year
 months = mdates.MonthLocator()  # every month

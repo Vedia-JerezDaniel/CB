@@ -12,7 +12,7 @@ from tone_count import *
 nltk.download('punkt')
 plt.style.use('seaborn-whitegrid')
 
-jpn = 'DB/jpn_pickle'
+jpn = 'DB/rate_jpn'
 infile = open(jpn,'rb')
 jpn = pickle.load(infile)
 jpn.rename(index={'2009-15-29':'2009-12-29'},inplace=True)
@@ -240,8 +240,8 @@ plt.title('Sentiment analysis evolution', fontsize=16)
 ax.scatter(jpn.date, jpn['Rate']*180, c = 'blue', alpha = 0.5)
 ax.plot(jpn.date, CompToMA, c = 'red', linewidth= 2.0)
 ax.plot(jpn.date, NetSentimentNorm,  c = 'green', linewidth= 1, alpha = 0.5)
-ax.legend([str(str(Window) + ' statements moving average'),
-           'Net sentiment of individual statements', 'Japan Rate'], prop={'size': 14}, loc = 1)
+ax.legend(['Japan Rate', str(str(Window) + ' statements moving average'),
+           'Net sentiment of individual statements'], prop={'size': 14}, loc = 1)
 
 import datetime
 # Format X-axis

@@ -15,7 +15,7 @@ from tone_count import *
 nltk.download("punkt")
 plt.style.use("seaborn-whitegrid")
 
-ecb_c = "DB/ecb_pickle"
+ecb_c = "DB/rate_ecb"
 infile = open(ecb_c, "rb")
 ecb = pickle.load(infile)
 
@@ -157,8 +157,7 @@ ax.grid(True)
 plt.show()
 fig.savefig("norm.png")
 
-# import nltk.data
-# tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+
 ## Loading interest rates DB
 ecbrate = pd.read_excel(r"DB/int.xlsx")
 ecbrate["Date"] = pd.to_datetime(ecbrate.date.values, format="%Y-%m-%d")
@@ -194,8 +193,9 @@ for i in range(len(ecb)):
 ecb.head(10)
 
 # checking for NAS, possible due to spare days
-ecb[ecb["Rate"].isna()]
-# ecb['Rate'].fillna(method='ffill', inplace=True)
+ecb[ecb["RateDecision"].isna()]
+ecb['RateDecision'].fillna(method='ffill', inplace=True)
+
 for i in range(len(ecb) - 1):
     if ecb["Rate"][i] == ecb["Rate"][i + 1]:
         ecb["RateDecision"][i] = 0
@@ -244,10 +244,9 @@ ax.plot(ecb.date, CompToMA, c="red", linewidth=2.0)
 ax.plot(ecb.date, NetSentimentNorm, c="green", linewidth=1, alpha=0.5)
 ax.legend(
     [
-        str(str(Window) + " statements moving average"),
-        "Net sentiment of individual statements",
-        "ECB Funds Rate",
-    ],
+        "ECB Funds Rate", str(str(Window) + " statements moving average"),
+        "Net sentiment of individual statements"
+            ],
     prop={"size": 14},
     loc=1,
 )

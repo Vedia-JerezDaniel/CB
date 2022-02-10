@@ -16,7 +16,7 @@ nltk.download("punkt")
 plt.style.use("seaborn-whitegrid")
 
 # open list pickle
-boe = "DB/boe_pickle"
+boe = "DB/rate_boe"
 infile = open(boe, "rb")
 boe = pickle.load(infile)
 
@@ -145,8 +145,6 @@ plt.legend(
 
 # format the ticks
 # round to nearest years.
-import matplotlib.dates as mdates
-
 years = mdates.YearLocator()  # every year
 months = mdates.MonthLocator()  # every month
 years_fmt = mdates.DateFormatter("%Y")
@@ -213,7 +211,7 @@ for i in range(len(boe) - 1):
 boe.head(10)
 
 boe[boe["RateDecision"].isna()]
-boe["Rate"].fillna(method="ffill", inplace=True)
+boe["RateDecision"].fillna(method="ffill", inplace=True)
 
 ## saving the pickle
 rate_des_pickle = "DB/rate_boe"
@@ -254,9 +252,8 @@ ax.plot(boe.date, CompToMA, c="red", linewidth=2.0)
 ax.plot(boe.date, NetSentimentNorm, c="green", linewidth=1, alpha=0.5)
 ax.legend(
     [
-        str(str(Window) + " statements moving average"),
-        "Net sentiment of individual statements",
-        "BOE Funds Rate",
+        "BOE Funds Rate", str(str(Window) + " statements moving average"),
+        "Net sentiment of individual statements"
     ],
     prop={"size": 12},
     loc=1,
