@@ -6,6 +6,7 @@ import seaborn as sns; sns.set(style="darkgrid")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from getsplit import *
+import os
 
 plt.rcParams["figure.figsize"] = (18,9)
 plt.style.use('fivethirtyeight')
@@ -24,11 +25,14 @@ boe = pd.read_excel("read_file")
 boe.shape
 
 
-def remove_short_nokeyword(df, keywords = ['rate', 'rates', 'federal fund', 'outlook', 'forecast', 'employ', 'economy','euro area','balance sheet'], min_times=2):
+def remove_short_nokeyword(df, keywords = None, min_times=2):
     '''
     Drop sections which do not have any one of keywords for min_times times
      before applying remove_short_section()
     '''
+    if keywords is None:
+        keywords = ['rate', 'rates', 'federal fund', 'outlook', 'forecast', 'employ', 'economy', 'euro area', 'balance sheet']
+
     new_df = df.copy()
     new_section_list = []
     ne=[]
@@ -72,10 +76,10 @@ def save_data(df, file_name, dir_name='../data/preprocessed/'):
         os.mkdir(dir_name)
     with open(dir_name + file_name + '.pickle', 'wb') as file:
         pickle.dump(df, file)
-    print("Data Saved to a pickle file in {} !".format(dir_name))
+    print(f"Data Saved to a pickle file in {dir_name} !")
     # Save results to a csv file
     df.to_csv(dir_name + file_name + '.csv', index=True)
-    print("Data Saved to a csv file in {} !".format(dir_name))
+    print(f"Data Saved to a csv file in {dir_name} !")
     
 
 save_data(split_statement_df, "jpn_split")
