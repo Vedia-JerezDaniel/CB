@@ -6,23 +6,25 @@ import seaborn as sns; sns.set()
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from mpl_toolkits.axes_grid1 import host_subplot
-
-import pickle
+# import pickle
 
 def fortay(sheet_name):
     df = pd.read_excel("EDA/eda_q.xlsx", sheet_name=sheet_name)
     # Create taylor dataframe
     taylor = df.copy(deep=True)
     # Obtain available index used to calculate Taylor rule each day
-    taylor['Y-Yp'] = (taylor['GDP'] - taylor['GDP Pot'])
+    taylor['Y-Yp'] = (taylor['GDP'] - taylor['GDP Pot']).rolling(window=4).mean()
+    taylor['Y-Yp'] = taylor['Y-Yp'].fillna(method='bfill')
     taylor['Pi*'] = 2
     taylor['Pi-Pi*'] = taylor['CPI'] - taylor['Pi*']
     taylor['r'] = 2
 
     # Calculate Taylor Rule
     taylor['Taylor'] = taylor['r'] + taylor['CPI'] + 0.5 * taylor['Pi-Pi*'] + 0.5 * taylor['Y-Yp']
+    # taylor['Taylor'] = taylor['Taylor'].nfillna(method='bfill')
     # Calculate Balanced-approach Rule
     taylor['Balanced'] = (taylor['r'] + taylor['CPI'] + 0.5 * taylor['Pi-Pi*'] + taylor['Y-Yp']).map(lambda x: max(x, 0))
+    taylor.replace(taylor.Balanced.max(), taylor.Taylor.max(), inplace=True)
     # Calculate Inertia Rule
     taylor['Inertia'] = 0.85 * taylor['inter_rate'] - 0.15 * taylor['Balanced']
     # Drop unnecessary columns
@@ -44,9 +46,9 @@ jpn = fortay(1)
 us = fortay(2)
 euro = fortay(3)
 
+
+
 euro.to_excel("E:\\GitRepo\\CB speeches\\EDA\\eutaylor.xlsx", engine="xlsxwriter")
-
-
 
 ax1 = host_subplot(111)
 ax2 = ax1.twinx()
@@ -64,8 +66,5 @@ leg.texts[1].set_color(l2.get_color())
 ax2.yaxis.get_label().set_color(l3.get_color())
 leg.texts[2].set_color(l3.get_color())
 plt.show()
-
-
-
 
 
