@@ -13,10 +13,11 @@ def fortay(sheet_name):
     # Create taylor dataframe
     taylor = df.copy(deep=True)
     # Obtain available index used to calculate Taylor rule each day
-    taylor['Y-Yp'] = (taylor['GDP'] - taylor['GDP Pot']).rolling(window=4).mean()
+    taylor['Y-Yp'] = (((taylor['GDP'] - taylor['GDP Pot']).rolling(window=4).sum())/4)/taylor['GDP'].rolling(window=4).mean()
     taylor['Y-Yp'] = taylor['Y-Yp'].fillna(method='bfill')
     taylor['Pi*'] = 2
-    taylor['Pi-Pi*'] = taylor['CPI'] - taylor['Pi*']
+    taylor['Pi-Pi*'] = taylor['CPI'] - taylor['Pi*'].rolling(window=4).mean()
+    taylor['Pi-Pi*'] = taylor['Pi-Pi*'].fillna(method='bfill')
     taylor['r'] = 2
 
     # Calculate Taylor Rule
@@ -46,25 +47,28 @@ jpn = fortay(1)
 us = fortay(2)
 euro = fortay(3)
 
-
+taylor = us
+taylor['Taylor'].head(5)
 
 euro.to_excel("E:\\GitRepo\\CB speeches\\EDA\\eutaylor.xlsx", engine="xlsxwriter")
 
+
 ax1 = host_subplot(111)
-ax2 = ax1.twinx()
+# ax2 = ax1.twinx()
 ax1.set_xlabel('date')
 ax1.set_ylabel('Taylor \n Balanced', color='b')
-ax2.set_ylabel('Inertia', color='r')
+# ax2.set_ylabel('Inertia', color='r')
 l1, =ax1.plot(taylor['date'], taylor['Taylor'], 'b-',label='Taylor')
 l2, =ax1.plot(taylor['date'], taylor['Balanced'], 'g*--',label='Balanced')
-l3, =ax2.plot(taylor['date'], taylor['Inertia'], 'r--',label='Inertia')
+# l3, =ax2.plot(taylor['date'], taylor['Inertia'], 'r--',label='Inertia')
 leg = plt.legend()
 ax1.yaxis.get_label().set_color(l1.get_color())
 leg.texts[0].set_color(l1.get_color())
 ax1.yaxis.get_label().set_color(l2.get_color())
 leg.texts[1].set_color(l2.get_color())
-ax2.yaxis.get_label().set_color(l3.get_color())
-leg.texts[2].set_color(l3.get_color())
+# ax2.yaxis.get_label().set_color(l3.get_color())
+# leg.texts[2].set_color(l3.get_color())
 plt.show()
 
 
+(((taylor['GDP'] - taylor['GDP Pot']).rolling(window=4).sum())/4).head(5)
