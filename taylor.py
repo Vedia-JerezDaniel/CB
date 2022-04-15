@@ -52,23 +52,27 @@ taylor['Taylor'].head(5)
 uk.to_excel("E:\\GitRepo\\CB speeches\\EDA\\uktaylor.xlsx", engine="xlsxwriter")
 
 
+euro.date = pd.to_datetime(euro.date)
+jpn.date = pd.to_datetime(jpn.date)
+
 ax1 = host_subplot(111)
 # ax2 = ax1.twinx()
 ax1.set_xlabel('date')
-ax1.set_ylabel('Taylor \n Balanced', color='b')
+ax1.set_ylabel('Taylor \n CPI', color="black")
 # ax2.set_ylabel('Inertia', color='r')
-l1, =ax1.plot(taylor['date'], taylor['Taylor'], 'b-',label='Taylor')
-l2, =ax1.plot(taylor['date'], taylor['Balanced'], 'g*--',label='Balanced')
+l1, =ax1.plot(jpn['date'],jpn['Taylor'], 'bo-',label='Taylor')
+l2, =ax1.plot(jpn['date'],jpn['CPI'], 'g*--',label='CPI')
 # l3, =ax2.plot(taylor['date'], taylor['Inertia'], 'r--',label='Inertia')
-leg = plt.legend()
+leg = plt.legend(loc=0, ncol=2, borderaxespad=0.)
 ax1.yaxis.get_label().set_color(l1.get_color())
 leg.texts[0].set_color(l1.get_color())
-ax1.yaxis.get_label().set_color(l2.get_color())
-leg.texts[1].set_color(l2.get_color())
+# ax1.yaxis.get_label().set_color(l2.get_color())
+# leg.texts[1].set_color(l2.get_color())
 # ax2.yaxis.get_label().set_color(l3.get_color())
 # leg.texts[2].set_color(l3.get_color())
 plt.show()
 
+(euro)
 
 
 # ARIMA FINAL
@@ -97,13 +101,13 @@ def timeseries_evaluation_metrics_func(y_true, y_pred):
 # test = us.Taylor[-4:]  'unemploy', 'Construct', 'Manuf', 'Retail', 'housing', 'inter_rate',
     #    'GDP', 10 Year Treasury'
 
-X = us[['CPI']]
+X = jpn[['CPI']]
 actualtrain, actualtest = X[:-3], X[-4:]
-exoX = us[['CPI energy']]
+exoX = np.log(jpn[['BDI']])
 exotrain, exotest = exoX[:-3], exoX[-4:]
 
 # [1, 4,7,12]  exogenous =exotrain 
-for m in [7,12]:
+for m in [1, 4,7,12]:
     print("="*100)
     print(f' Fitting SARIMAX for Seasonal value m = {str(m)}')
     stepwise_model = auto_arima(actualtrain,exogenous =exotrain,start_p=1, start_q=1,
@@ -117,10 +121,10 @@ for m in [7,12]:
 
     forecast,conf_int = stepwise_model.predict(n_periods=4,exogenous =exotest, return_conf_int=True)
     df_conf = pd.DataFrame(conf_int,columns= ['Upper_bound','Lower_bound'])
-    df_conf["new_index"] = range(52,56)
+    df_conf["new_index"] = range(56,60)
     df_conf = df_conf.set_index("new_index")
     forecast = pd.DataFrame(forecast, columns=['close_pred'])
-    forecast["new_index"] = range(52,56)
+    forecast["new_index"] = range(56,60)
     forecast = forecast.set_index("new_index")
 
     timeseries_evaluation_metrics_func(actualtest, forecast)
